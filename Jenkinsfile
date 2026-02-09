@@ -9,13 +9,12 @@ pipeline {
         APP_EC2_IP = "APP_EC2_54.144.241.3"
     }
 
-    stages {
-
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/MojjadaCode-Git/project1-node-jenkins.git'
-            }
-        }
+stage('Checkout') {
+    steps {
+        git branch: 'main',
+            url: 'https://github.com/MojjadaCode-Git/project1-node-jenkins.git'
+    }
+}
 
         stage('Build Docker Image') {
             steps {
