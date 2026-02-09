@@ -5,9 +5,8 @@ pipeline {
         AWS_REGION = "us-east-1"
         ACCOUNT_ID = "532465846775"
         ECR_REPO   = "project1-app"
-        IMAGE_TAG = "${BUILD_NUMBER}"
+        IMAGE_TAG  = "${BUILD_NUMBER}"
         APP_EC2_IP = "54.144.241.3"
-"
     }
 
     stages {
@@ -37,15 +36,15 @@ pipeline {
         stage('Deploy to Application EC2') {
             steps {
                 sshagent(['app-ec2-key']) {
-                    sh '''
-                    ssh -o StrictHostKeyChecking=no ec2-user@$APP_EC2_IP "
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ec2-user@$APP_EC2_IP '
                     docker pull $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG
                     docker stop nodeapp || true
                     docker rm nodeapp || true
                     docker run -d -p 80:3000 --name nodeapp \
                     $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG
-                    "
-                    '''
+                    '
+                    """
                 }
             }
         }
