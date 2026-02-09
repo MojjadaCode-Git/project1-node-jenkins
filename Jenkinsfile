@@ -6,7 +6,8 @@ pipeline {
         ACCOUNT_ID = "532465846775"
         ECR_REPO   = "project1-app"
         IMAGE_TAG = "${BUILD_NUMBER}"
-        APP_EC2_IP = "YOUR_APP_EC2_PUBLIC_IP"
+        APP_EC2_IP = "54.144.241.3"
+"
     }
 
     stages {
