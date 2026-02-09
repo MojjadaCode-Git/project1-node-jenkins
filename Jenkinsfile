@@ -33,21 +33,23 @@ pipeline {
             }
         }
 
+        // 👇 ADD IT HERE (THIS IS THE PLACE)
         stage('Deploy to Application EC2') {
             steps {
                 sshagent(['app-ec2-key']) {
                     sh """
-                    ssh -o StrictHostKeyChecking=no ec2-user@$APP_EC2_IP '
-                    docker pull $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG
+                    ssh -o StrictHostKeyChecking=no ec2-user@${APP_EC2_IP} '
+                    docker pull ${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}
                     docker stop nodeapp || true
                     docker rm nodeapp || true
                     docker run -d -p 80:3000 --name nodeapp \
-                    $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG
+                    ${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}
                     '
                     """
                 }
             }
         }
+
     }
 
     post {
