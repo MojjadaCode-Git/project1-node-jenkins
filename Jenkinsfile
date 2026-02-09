@@ -4,17 +4,12 @@ pipeline {
     environment {
         AWS_REGION = "us-east-1"
         ACCOUNT_ID = "532465846775"
-        ECR_REPO = "project1-app"
+        ECR_REPO   = "project1-app"
         IMAGE_TAG = "${BUILD_NUMBER}"
-        APP_EC2_IP = "APP_EC2_54.144.241.3"
+        APP_EC2_IP = "YOUR_APP_EC2_PUBLIC_IP"
     }
 
-stage('Checkout') {
-    steps {
-        git branch: 'main',
-            url: 'https://github.com/MojjadaCode-Git/project1-node-jenkins.git'
-    }
-}
+    stages {
 
         stage('Build Docker Image') {
             steps {
@@ -22,7 +17,7 @@ stage('Checkout') {
             }
         }
 
-        stage('Push to ECR') {
+        stage('Push Image to ECR') {
             steps {
                 sh '''
                 aws ecr get-login-password --region $AWS_REGION | \
@@ -38,7 +33,7 @@ stage('Checkout') {
             }
         }
 
-        stage('Deploy to App EC2') {
+        stage('Deploy to Application EC2') {
             steps {
                 sshagent(['app-ec2-key']) {
                     sh '''
@@ -52,6 +47,15 @@ stage('Checkout') {
                     '''
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ Deployment successful"
+        }
+        failure {
+            echo "❌ Deployment failed"
         }
     }
 }
